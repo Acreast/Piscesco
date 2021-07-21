@@ -36,10 +36,27 @@ namespace Piscesco.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+
+            public string Role { get; set; }
+
+
+            [Required(ErrorMessage = "Name is necessary for your account.")]
+            [StringLength(200, ErrorMessage = "Name must be more than 6 and less than 200 in length.", MinimumLength = 6)]
+            [Display(Name = "Name")]
+            public string Name { get; set; }
+
+            [Required(ErrorMessage = "Address is required for billing.")]
+            [StringLength(200, ErrorMessage = "Address must be more than 6 and less than 200 in length.", MinimumLength = 6)]
+            [Display(Name = "Address")]
+            public string UserAddress { get; set; }
+
+
         }
 
         private async Task LoadAsync(PiscescoUser user)
         {
+
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
@@ -47,7 +64,10 @@ namespace Piscesco.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                UserAddress = user.UserAddress,
+                Name = user.Name,
+                Role = user.Role
             };
         }
 
