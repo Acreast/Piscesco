@@ -7,6 +7,13 @@
     "mssql2": {
       "type": "mssql",
       "connectionId": "PiscescoModelContext"
+    },
+    "secrets1": {
+      "type": "secrets"
+    },
+    "storage1": {
+      "type": "storage",
+      "connectionId": "blobstoragepiscesco"
     }
   }
 }

@@ -16,7 +16,8 @@ namespace Piscesco.Models
         public string StallName { get; set; }
         public string Description { get; set; }
 
-        //public string StallImage { get; set; }
+        [Display(Name = "Stall Image")]
+        public string StallImage { get; set; }
 
     }
 }

@@ -1,8 +1,12 @@
 ﻿@model Piscesco.Models.Stall
+@using Piscesco.Controllers
+
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    BlobsController bc = new BlobsController();
+    Uri imageUri = bc.GetImage(Model.StallImage);
 }
 
 <h1>Details</h1>
@@ -11,6 +15,13 @@
     <h4>Stall</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            Stall Image
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@imageUri" style="max-height:100px;max-width:100px" />
+        </dd>
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StallName)
         </dt>

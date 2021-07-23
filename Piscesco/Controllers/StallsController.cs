@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Piscesco.Areas.Identity.Data;
+using Piscesco.Controllers;
 using Piscesco.Data;
 using Piscesco.Models;
 
@@ -64,12 +67,18 @@ namespace Piscesco.Views.Stalls
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StallID,OwnerID,StallName,Description")] Stall stall)
+        public async Task<IActionResult> Create([Bind("StallID,OwnerID,StallName,Description,StallImage")] Stall stall, IFormFile files)
         {
             if (ModelState.IsValid)
             {
                 var loginSession = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
                 stall.OwnerID = loginSession.Id;
+                Guid imageUUID = Guid.NewGuid();
+                string imageUUIDString = imageUUID.ToString();
+                stall.StallImage = imageUUIDString;
+                BlobsController bc = new BlobsController();
+                Debug.WriteLine(files.FileName);
+                bc.UploadImage(files, imageUUIDString);
                 _context.Add(stall);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -98,7 +107,7 @@ namespace Piscesco.Views.Stalls
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StallID,OwnerID,StallName,Description")] Stall stall)
+        public async Task<IActionResult> Edit(int id, [Bind("StallID,OwnerID,StallName,Description,StallImage")] Stall stall, IFormFile files)
         {
             if (id != stall.StallID)
             {
@@ -109,8 +118,19 @@ namespace Piscesco.Views.Stalls
             {
                 try
                 {
+                    if(files != null)
+                    {
+                        Guid imageUUID = Guid.NewGuid();
+                        string imageUUIDString = imageUUID.ToString();
+                        stall.StallImage = imageUUIDString;
+                        BlobsController bc = new BlobsController();
+                        bc.UploadImage(files, imageUUIDString);
+                        stall.StallImage = imageUUIDString;
+                        
+                    }
                     _context.Update(stall);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {

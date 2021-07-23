@@ -16,7 +16,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group" style="display:none">
@@ -34,10 +34,10 @@
                 <input asp-for="Description" class="form-control" required />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
+            <div class="form-group">
                 <label class="control-label">Stall Image</label>
-                <input class="form-control" type="file" name="files" accept="image/jpeg,image/png" required />
-            </div>*@
+                <input class="form-control" type="file" name="files" accept="image/jpeg,image/png" style="border:none;padding-left:0"  required />
+            </div>
 
 
             <div class="form-group">
