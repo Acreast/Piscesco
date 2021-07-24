@@ -71,14 +71,18 @@ namespace Piscesco.Views.Stalls
         {
             if (ModelState.IsValid)
             {
+                //Get current user
                 var loginSession = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
                 stall.OwnerID = loginSession.Id;
-                Guid imageUUID = Guid.NewGuid();
+
+                //Image upload
+                Guid imageUUID = Guid.NewGuid(); //Unique UUID
                 string imageUUIDString = imageUUID.ToString();
                 stall.StallImage = imageUUIDString;
                 BlobsController bc = new BlobsController();
-                Debug.WriteLine(files.FileName);
                 bc.UploadImage(files, imageUUIDString);
+
+
                 _context.Add(stall);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -118,6 +122,7 @@ namespace Piscesco.Views.Stalls
             {
                 try
                 {
+                    Debug.WriteLine(files == null);
                     if(files != null)
                     {
                         Guid imageUUID = Guid.NewGuid();
@@ -125,7 +130,6 @@ namespace Piscesco.Views.Stalls
                         stall.StallImage = imageUUIDString;
                         BlobsController bc = new BlobsController();
                         bc.UploadImage(files, imageUUIDString);
-                        stall.StallImage = imageUUIDString;
                         
                     }
                     _context.Update(stall);

@@ -11,9 +11,9 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group" style="display:none">
                 <label asp-for="StallID" class="control-label"></label>
                 <input asp-for="StallID" class="form-control" />
                 <span asp-validation-for="StallID" class="text-danger"></span>
@@ -29,7 +29,7 @@
                 <span asp-validation-for="ProductDescription" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
+                <label asp-for="Price" class="control-label">Price per unit</label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
@@ -39,9 +39,8 @@
                 <span asp-validation-for="ProductUnit" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProductImage" class="control-label"></label>
-                <input asp-for="ProductImage" class="form-control" />
-                <span asp-validation-for="ProductImage" class="text-danger"></span>
+                <label class="control-label">Product Image</label>
+                <input class="form-control" type="file" name="files" accept="image/*" style="border:none;padding-left:0" required />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

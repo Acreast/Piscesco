@@ -72,3 +72,10 @@ body {
 
 
 /*Custom css*/
+.center-td{
+    vertical-align:middle !important; 
+}
+
+.description-td{
+    max-width:205px;
+}

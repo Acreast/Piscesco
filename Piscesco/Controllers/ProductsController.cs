@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Piscesco.Areas.Identity.Data;
+using Piscesco.Controllers;
 using Piscesco.Data;
 using Piscesco.Models;
 
@@ -37,8 +39,11 @@ namespace Piscesco.Views.Products
                 Debug.WriteLine(id);
                 _stallID = (int)id;
             }
+            var products = from p in _context.Product select p;
+            products = products.Where(item => item.StallID.Equals(_stallID));
 
-            return View(await _context.Product.ToListAsync());
+
+            return View(products);
         }
 
         // GET: Products/Details/5
@@ -72,13 +77,31 @@ namespace Piscesco.Views.Products
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,ProductImage")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,ProductImage")] Product product, IFormFile files)
         {
             if (ModelState.IsValid)
             {
+                //If stall does no exist
+                var stall = await _context.Stall.FindAsync(_stallID);
+                if (stall == null)
+                {
+                    return NotFound();
+                }
+
+                //Set stall ID
                 product.StallID = _stallID;
-                Debug.WriteLine(product.StallID);
+
+                //Image upload
+                Guid imageUUID = Guid.NewGuid();
+                string imageUUIDString = imageUUID.ToString();
+                product.ProductImage = imageUUIDString;
+                BlobsController bc = new BlobsController();
+                bc.UploadImage(files, imageUUIDString);
+
                 _context.Add(product);
+
+
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -106,7 +129,7 @@ namespace Piscesco.Views.Products
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,ProductImage")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,ProductImage")] Product product, IFormFile files)
         {
             if (id != product.ProductID)
             {
@@ -117,6 +140,16 @@ namespace Piscesco.Views.Products
             {
                 try
                 {
+                    if (files != null)
+                    {
+                        Guid imageUUID = Guid.NewGuid();
+                        string imageUUIDString = imageUUID.ToString();
+                        product.ProductImage = imageUUIDString;
+                        BlobsController bc = new BlobsController();
+                        bc.UploadImage(files, imageUUIDString);
+
+                    }
+
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }

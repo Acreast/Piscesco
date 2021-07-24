@@ -1,8 +1,10 @@
 ﻿@model IEnumerable<Piscesco.Models.Product>
+@using Piscesco.Controllers
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    BlobsController bc = new BlobsController();
 }
 
 <h1>Index</h1>
@@ -14,7 +16,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.StallID)
+                @Html.DisplayNameFor(model => model.ProductID)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ProductName)
@@ -37,25 +39,25 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StallID)
+            <td class="center-td">
+                @Html.DisplayFor(modelItem => item.ProductID)
             </td>
-            <td>
+            <td class="center-td" style="max-width:75px">
                 @Html.DisplayFor(modelItem => item.ProductName)
             </td>
-            <td>
+            <td class="center-td description-td">
                 @Html.DisplayFor(modelItem => item.ProductDescription)
             </td>
-            <td>
+            <td class="center-td">
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
-            <td>
+            <td class="center-td">
                 @Html.DisplayFor(modelItem => item.ProductUnit)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductImage)
+            <td style="text-align:center" class="description-td">
+                <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
             </td>
-            <td>
+            <td class="center-td">
                 <a asp-action="Edit" asp-route-id="@item.ProductID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ProductID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ProductID">Delete</a>

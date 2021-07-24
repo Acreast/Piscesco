@@ -30,16 +30,16 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td style="text-align:center">
-                <img src="@bc.GetImage(item.StallImage)" style="max-height:26px;max-width:100px" />
+            <td style="text-align:center" class="center-td">
+                <img src="@bc.GetImage(item.StallImage)" style="max-height:50px;max-width:100px" />
             </td>
-            <td>
+            <td class="center-td">
                 @Html.DisplayFor(modelItem => item.StallName)
             </td>
-            <td>
+            <td class="center-td">
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-            <td>
+            <td class="center-td">
                 <a asp-action="Edit" asp-route-id="@item.StallID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.StallID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.StallID">Delete</a>
