@@ -69,3 +69,13 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+
+/*Custom css*/
+.center-td{
+    vertical-align:middle !important; 
+}
+
+.description-td{
+    max-width:205px;
+}

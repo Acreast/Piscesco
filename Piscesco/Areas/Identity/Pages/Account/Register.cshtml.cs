@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Piscesco.Areas.Identity.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Diagnostics;
 
 namespace Piscesco.Areas.Identity.Pages.Account
 {
@@ -61,6 +63,29 @@ namespace Piscesco.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+
+            [Required(ErrorMessage = "Please choose the user type that you would like to register as.")]
+            [DataType(DataType.Text)]
+            [Display(Name = "Role")]
+            public string Role { get; set; }
+
+            [Required(ErrorMessage ="Name is required for registration.")]
+            [StringLength(200,ErrorMessage ="Name must be more than 6 and less than 200 in length.", MinimumLength = 6)]
+            [Display(Name = "Name")]
+            public string Name { get; set; }
+
+            [Required(ErrorMessage = "Address is required for registration.")]
+            [StringLength(200, ErrorMessage = "Address must be more than 6 and less than 200 in length.", MinimumLength = 6)]
+            [Display(Name = "Address")]
+            public string UserAddress { get; set; }
+
+            [Required (ErrorMessage = "Phone number is required for registration.")]
+            [Phone]
+            [Display(Name = "Contact Number")]
+            public string PhoneNumber { get; set; }
+
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -75,7 +100,15 @@ namespace Piscesco.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new PiscescoUser { UserName = Input.Email, Email = Input.Email };
+                var user = new PiscescoUser 
+                { 
+                    UserName = Input.Email, 
+                    Email = Input.Email ,
+                    Name = Input.Name ,
+                    Role = Input.Role,
+                    PhoneNumber = Input.PhoneNumber,
+                    UserAddress = Input.UserAddress
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

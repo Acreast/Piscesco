@@ -3,6 +3,19 @@
     "mssql1": {
       "type": "mssql.local",
       "connectionId": "PiscescoContextConnection"
+    },
+    "mssql2": {
+      "type": "mssql.local",
+      "connectionId": "PiscescoModelContext"
+    },
+    "secrets1": {
+      "type": "secrets.user"
+    },
+    "storage1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/piscescostorage",
+      "type": "storage.azure",
+      "connectionId": "blobstoragepiscesco",
+      "secretStore": "LocalSecretsFile"
     }
   }
 }

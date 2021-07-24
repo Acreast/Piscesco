@@ -2,9 +2,26 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>978e61f4-5a1e-4a76-b68d-35a5a1698346</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\PiscescoModel\20210722123442_AddProductImageColumn.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722123442_AddProductImageColumn.Designer.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722125013_StallProductTable.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722125013_StallProductTable.Designer.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722125430_ProductStallTable.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722125430_ProductStallTable.Designer.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722125702_ProductStallTable.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722125702_ProductStallTable.Designer.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722130338_ProductStallTable.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210722130338_ProductStallTable.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.3.0" />
+    <PackageReference Include="Azure.Storage.Files.Shares" Version="12.1.0" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.15" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.15" />
@@ -12,7 +29,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\PiscescoModel\" />
+    <Folder Include="Views\ProductManagement\" />
   </ItemGroup>
 
 </Project>
