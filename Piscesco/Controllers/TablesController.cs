@@ -106,8 +106,10 @@ namespace Piscesco.Controllers
             await _signInManager.RefreshSignInAsync(user);
         }
 
+        [HttpPost("{OrderID}/{ProductID}/{ProductQuantity}")]
+        [ActionName("AddOrderItem")]
         // add new product item into the order list
-        public bool AddOrderItem(string OrderID, string ProductID, string ProductQuantity)
+        public IActionResult AddOrderItem(string OrderID, string ProductID, string ProductQuantity)
         {
             CreateOrderTable();
             CreateOrderListTable();
@@ -116,28 +118,23 @@ namespace Piscesco.Controllers
             OrderListEntity orderlist = new OrderListEntity(OrderID, ProductID);
             orderlist.ProductQuantity = ProductQuantity;
 
-            bool status = false;
-
             CloudTable table = GetOrderListTableInformation();
             try
             {
                 TableOperation insertOperation = TableOperation.Insert(orderlist); // insertion action
                 TableResult insertResult = table.ExecuteAsync(insertOperation).Result;
-                // ViewBag.result = insertResult.HttpStatusCode; // to get the network success code 204
-                // ViewBag.TableName = table.Name;
-
-                status = true;
+                ViewBag.result = insertResult.HttpStatusCode; // to get the network success code 204
+                ViewBag.TableName = table.Name;
+                ViewBag.Message = "Added into cart";
             }
             catch (Exception ex)
             {
                 // show the error message if operation failed
-                // ViewBag.result = 100;
-                // ViewBag.Message = "Insertion Error: " + ex.ToString();
-
-                status = false;
+                ViewBag.result = 100;
+                ViewBag.Message = "Insertion Error: " + ex.ToString();
             }
 
-            return status;
+            return RedirectToAction("BrowseProduct", "Products");
         }
 
         // update the existing order items if there already are an existing same product item within the order
