@@ -28,6 +28,12 @@ namespace Piscesco.Models
         [Display(Name = "Unit")]
         public string ProductUnit { get; set; }
 
+        [Column(TypeName = "decimal(18,0)")]
+        public int Stock { get; set; }
+
+        [Column(TypeName = "decimal(2,0)")]
+        public int Discount { get; set; }
+
         [Display(Name = "Product Image")]
         public string ProductImage { get; set; }
     }
