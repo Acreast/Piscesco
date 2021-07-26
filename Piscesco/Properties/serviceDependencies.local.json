@@ -12,7 +12,7 @@
       "type": "secrets.user"
     },
     "storage1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/piscescostorage",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/piscescotablestorage",
       "type": "storage.azure",
       "connectionId": "blobstoragepiscesco",
       "secretStore": "LocalSecretsFile"

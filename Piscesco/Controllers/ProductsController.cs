@@ -32,6 +32,46 @@ namespace Piscesco.Views.Products
         }
 
         // GET: Products
+        public async Task<IActionResult> BrowseProduct(String ProductName, String StallID)
+        {
+            // technically just like SQL query
+            var product = from m in _context.Product join x in _context.Stall
+                          on m.StallID equals x.StallID
+                          select m; // selecting the product/data from the context product
+
+            // to check whether its there or not
+            if (!string.IsNullOrEmpty(ProductName))
+            {
+                // s stands for database variable, ProductName is the table column
+                product = product.Where(s => s.ProductName.Contains(ProductName));
+            }
+
+            // to show and attach the available product types in the dropdown list from Index.cshtml
+            // m as in pointing at the Product table
+            // getting all the available FlowerType data from the respective table
+            IQueryable<String> TypeQuery = from m in _context.Product join x in _context.Stall
+                                           on m.StallID equals x.StallID
+                                           orderby m.StallID
+                                           select m.StallID.ToString();
+            // find the disctinct value, aka removing the duplicated values and attach them as a list
+            IEnumerable<SelectListItem> items =
+                new SelectList(await TypeQuery.Distinct().ToListAsync());
+            // using viewbag to attach it on the front-end, which is the drop down box in this case.
+            ViewBag.StallID = items;
+
+            // after attach the available StaffName value in the dropdown list, we will proceed to code the feature for filteration
+            if (!string.IsNullOrEmpty(StallID))
+            {
+                // s stands for database variable, StallName is the table column
+                product = product.Where(s => s.StallID.ToString() == StallID);
+            }
+
+            // Default: this is to display the entire page/data on load, we will change it to only show after filter
+            // return View(await _context.Product.ToListAsync());
+            return View(await product.ToListAsync());
+        }
+
+        // GET: Products
         public async Task<IActionResult> Index(int? id)
         {
             if (id.HasValue)

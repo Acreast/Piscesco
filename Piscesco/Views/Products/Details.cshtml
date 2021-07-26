@@ -8,6 +8,12 @@
     Uri imageUri = bc.GetImage(Model.ProductImage);
 }
 
+@using Microsoft.AspNetCore.Identity
+@using Piscesco.Areas.Identity.Data
+
+@inject SignInManager<PiscescoUser> SignInManager
+@inject UserManager<PiscescoUser> UserManager
+
 <h1>Details</h1>
 
 <div>
@@ -53,6 +59,18 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ProductID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var loginSession = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
+        @if (loginSession.Role.Equals("Seller"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.ProductID">Edit</a><p> | </p>
+            <a asp-action="Index">Back to List</a>
+        }
+        else if (loginSession.Role.Equals("Customer"))
+        {
+            <a asp-action="BrowseProduct">Back to Browsing</a><p> | </p>
+            <a asp-action="Index">Add to Cart</a>
+        }
+    }
 </div>

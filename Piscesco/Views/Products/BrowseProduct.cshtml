@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Piscesco.Models.Product>
+@using Piscesco.Controllers
+
+@{
+    ViewData["Title"] = "Browse Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    BlobsController bc = new BlobsController();
+}
+
+<h1>Browse Product</h1>
+<p>
+    <a asp-action="Create" asp-route-stallID="">View Cart List</a>
+</p>
+
+<!-- method and action being left empty due to action to submit at the same page. method if didnt mention will automatically defined as get method -->
+<form>
+    <!-- provide a text box for filteration based on the product name -->
+    Enter your product name: <input type="text" name="ProductName" />
+    <br /><br />
+    <input type="submit" name="search" value="Search Product" />
+    <br /><br />
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductUnit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductImage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StallID)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.ProductID)
+                </td>
+                <td class="center-td" style="max-width:75px">
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td class="center-td description-td">
+                    @Html.DisplayFor(modelItem => item.ProductDescription)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.ProductUnit)
+                </td>
+                <td style="text-align:center" class="description-td">
+                    <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.StallID)
+                </td>
+                <td class="center-td">
+                    <a asp-action="Add" asp-route-id="@item.ProductID">Add to Cart</a> |
+                    <a asp-action="Details" asp-route-id="@item.ProductID">View Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

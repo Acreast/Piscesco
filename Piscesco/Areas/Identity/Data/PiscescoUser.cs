@@ -18,6 +18,7 @@ namespace Piscesco.Areas.Identity.Data
         [PersonalData]
         public string UserAddress { get; set; }
 
-
+        [PersonalData]
+        public string OrderID { get; set; }
     }
 }
