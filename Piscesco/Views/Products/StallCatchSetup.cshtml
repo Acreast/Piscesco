@@ -1,56 +1,123 @@
-﻿@model IEnumerable<Piscesco.Models.Product>
+﻿@*@model IEnumerable<Piscesco.Models.Product>*@
+@model dynamic
+
 @using Piscesco.Controllers
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
     BlobsController bc = new BlobsController();
+    IEnumerable<Product> product = ViewData["Products"] as IEnumerable<Product>;
+    IEnumerable<Product> featuredProduct = ViewData["FeaturedProducts"] as IEnumerable<Product>;
 }
+<p>
+    <a asp-action="Index">Back to List</a>
+</p>
 
 <h1>Set today's catch</h1>
 
-<p>
-    <a asp-action="Create" asp-route-stallID="">Create New</a>
+<br />
+<br />
 
-</p>
 
-<div class="card-columns">
+@if (featuredProduct.Count() > 0)
+{
+    <h2>Added list</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => new Product().ProductID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => new Product().ProductName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => new Product().Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => new Product().ProductUnit)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => new Product().Stock)
+                </th>
+                <th style="text-align:center">
+                    @Html.DisplayNameFor(model => new Product().ProductImage)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in featuredProduct)
+            {
+                <tr>
+                    <td class="center-td">
+                        @Html.DisplayFor(modelItem => item.ProductID)
+                    </td>
+                    <td class="center-td" style="max-width:75px">
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </td>
+                    <td class="center-td">
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td class="center-td">
+                        @Html.DisplayFor(modelItem => item.ProductUnit)
+                    </td>
+                    <td class="center-td">
+                        @Html.DisplayFor(modelItem => item.Stock)
+                    </td>
+                    <td style="text-align:center" class="description-td">
+                        <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
+                    </td>
+                    <td class="center-td">
+                        <form asp-action="RemoveFeatured" asp-route-id="@item.ProductID">
+                            <input type="hidden" asp-for="@item.ProductID" />
+                            <input type="submit" value="Remove" class="btn btn-danger" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-</div>
+    <hr class="my-12" style="padding-bottom:2em" />
 
-<div class="card-columns selectedCardColumn">
+}
 
-</div>
+
+
 
 
 
 
 <table class="table">
+
+    <h2>Product list</h2>
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ProductID)
+                @Html.DisplayNameFor(model => new Product().ProductID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductName)
+                @Html.DisplayNameFor(model => new Product().ProductName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => new Product().Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductUnit)
+                @Html.DisplayNameFor(model => new Product().ProductUnit)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Stock)
+                @Html.DisplayNameFor(model => new Product().Stock)
             </th>
             <th style="text-align:center">
-                @Html.DisplayNameFor(model => model.ProductImage)
+                @Html.DisplayNameFor(model => new Product().ProductImage)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in product)
         {
             <tr>
                 <td class="center-td">
@@ -72,9 +139,10 @@
                     <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
                 </td>
                 <td class="center-td">
-                    <a asp-action="Edit" asp-route-id="@item.ProductID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ProductID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ProductID">Delete</a>
+                    <form asp-action="AddFeatured" asp-route-id="@item.ProductID">
+                        <input type="hidden" asp-for="@item.ProductID" />
+                        <input type="submit" value="Add" class="btn btn-success" />
+                    </form>
                 </td>
             </tr>
         }
