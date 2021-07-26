@@ -36,7 +36,7 @@ namespace Piscesco.Views.Products
         {
             if (id.HasValue)
             {
-                Debug.WriteLine(id);
+                //Debug.WriteLine(id);
                 _stallID = (int)id;
             }
             var products = from p in _context.Product select p;
@@ -45,6 +45,48 @@ namespace Piscesco.Views.Products
 
             return View(products);
         }
+
+        // GET: Products
+        public async Task<IActionResult> StallCatchSetup(int? id)
+        {
+            if (id.HasValue)
+            {
+                //Debug.WriteLine(id);
+                _stallID = (int)id;
+            }
+            var products = from p in _context.Product select p;
+            products = products.Where(item => item.StallID.Equals(_stallID));
+
+            var featuredProducts = from p in _context.FeaturedProduct select p;
+            featuredProducts = featuredProducts.Where(item => item.StallID.Equals(_stallID));
+
+            List<Product> featuredProductsList = new List<Product>();
+            foreach (var featuredItem in featuredProducts)
+            {
+                foreach (var productItem in products)
+                {
+                    if (featuredItem.ProductID.Equals(productItem.ProductID))
+                    {
+                        featuredProductsList.Add(productItem);
+                    }
+                }
+            }
+
+            //var featuredProducts = from p in _context.Product
+            //                       join fp in _context.FeaturedProduct on p.ProductID equals fp.ProductID into result
+            //                       where
+            //                       p.StallID == _stallID 
+            //                       select result;
+
+
+            ViewData["Products"] = products;
+            ViewData["FeaturedProducts"] = featuredProductsList;
+
+
+            return View();
+        }
+
+
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -64,6 +106,8 @@ namespace Piscesco.Views.Products
             return View(product);
         }
 
+
+
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -77,7 +121,7 @@ namespace Piscesco.Views.Products
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,ProductImage")] Product product, IFormFile files)
+        public async Task<IActionResult> Create([Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,Stock,ProductImage")] Product product, IFormFile files)
         {
             if (ModelState.IsValid)
             {
@@ -129,7 +173,7 @@ namespace Piscesco.Views.Products
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,ProductImage")] Product product, IFormFile files)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,Stock,ProductImage")] Product product, IFormFile files)
         {
             if (id != product.ProductID)
             {
@@ -169,6 +213,31 @@ namespace Piscesco.Views.Products
             return View(product);
         }
 
+
+        [HttpPost]
+        [ActionName("AddFeatured")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddFeatured(int id, [Bind("FeaturedProductID,StallID,ProductID")] FeaturedProduct fp)
+        {
+            if (ModelState.IsValid)
+            {
+                //If stall does no exist
+                var stall = await _context.Stall.FindAsync(_stallID);
+                if (stall == null)
+                {
+                    return NotFound();
+                }
+
+                //Set stall ID
+                fp.StallID = _stallID;
+                fp.ProductID = id;
+                _context.Add(fp);
+
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(StallCatchSetup));
+        }
+
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -196,6 +265,28 @@ namespace Piscesco.Views.Products
             _context.Product.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Products/Delete/5
+        [HttpPost, ActionName("RemoveFeatured")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFeatured(int id)
+        {
+            //var product = await _context.Product.FindAsync(id);
+            var featuredProducts = from p in _context.FeaturedProduct
+                                   select p;
+            FeaturedProduct selectedProduct = new FeaturedProduct();
+            foreach(var fp in featuredProducts)
+            {
+                if (fp.ProductID.Equals(id) && fp.StallID.Equals(_stallID))
+                {
+                    selectedProduct = fp;
+                }
+            }
+            //var delete = await _context.FeaturedProduct.FindAsync(selectedProduct.FeaturedProductID);
+            _context.FeaturedProduct.Remove(selectedProduct);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(StallCatchSetup));
         }
 
         private bool ProductExists(int id)

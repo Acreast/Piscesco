@@ -2,39 +2,23 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Piscesco.Data;
 
 namespace Piscesco.Migrations.PiscescoModel
 {
     [DbContext(typeof(PiscescoModelContext))]
-    partial class PiscescoModelContextModelSnapshot : ModelSnapshot
+    [Migration("20210724122805_ProductStockColumn")]
+    partial class ProductStockColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Piscesco.Models.FeaturedProduct", b =>
-                {
-                    b.Property<int>("FeaturedProductID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StallID")
-                        .HasColumnType("int");
-
-                    b.HasKey("FeaturedProductID");
-
-                    b.ToTable("FeaturedProduct");
-                });
 
             modelBuilder.Entity("Piscesco.Models.Product", b =>
                 {

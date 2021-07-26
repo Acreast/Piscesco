@@ -17,5 +17,7 @@ namespace Piscesco.Data
         public DbSet<Piscesco.Models.Stall> Stall { get; set; }
 
         public DbSet<Piscesco.Models.Product> Product { get; set; }
+
+        public DbSet<Piscesco.Models.FeaturedProduct> FeaturedProduct { get; set; }
     }
 }
