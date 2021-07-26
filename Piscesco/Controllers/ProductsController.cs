@@ -117,7 +117,7 @@ namespace Piscesco.Views.Products
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,ProductImage")] Product product, IFormFile files)
+        public async Task<IActionResult> Create([Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,Stock,ProductImage")] Product product, IFormFile files)
         {
             if (ModelState.IsValid)
             {
@@ -169,7 +169,7 @@ namespace Piscesco.Views.Products
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,ProductImage")] Product product, IFormFile files)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductID,StallID,ProductName,ProductDescription,Price,ProductUnit,Stock,ProductImage")] Product product, IFormFile files)
         {
             if (id != product.ProductID)
             {
