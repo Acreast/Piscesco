@@ -64,12 +64,12 @@
         var loginSession = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
         @if (loginSession.Role.Equals("Seller"))
         {
-            <a asp-action="Edit" asp-route-id="@Model.ProductID">Edit</a><p> | </p>
+            <a asp-action="Edit" asp-route-id="@Model.ProductID">Edit</a><p style="display: inline-block"> | </p>
             <a asp-action="Index">Back to List</a>
         }
         else if (loginSession.Role.Equals("Customer"))
         {
-            <a asp-action="BrowseProduct">Back to Browsing</a><p> | </p>
+            <a asp-action="BrowseProduct">Back to Browsing</a><p style="display: inline-block"> | </p>
             <a asp-action="Index">Add to Cart</a>
         }
     }
