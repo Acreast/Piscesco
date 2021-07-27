@@ -2,7 +2,7 @@
 @using Piscesco.Controllers
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "AddToCart";
     Layout = "~/Views/Shared/_Layout.cshtml";
     BlobsController bc = new BlobsController();
     Uri imageUri = bc.GetImage(Model.ProductImage);
@@ -76,7 +76,7 @@
         else if (loginSession.Role.Equals("Customer"))
         {
             <a asp-action="BrowseProduct">Back to Browsing</a><p style="display: inline-block"> | </p>
-            <a asp-action="AddToCart" asp-route-id="@Model.ProductID">Add to Cart</a>
+            <a asp-action="Index">Confirm Adding</a>
 
             <!-- if there are any message pass into here, then show the message -->
             @if ((@ViewBag.Message != null) && (@ViewBag.Message))

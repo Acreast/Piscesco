@@ -104,6 +104,24 @@ namespace Piscesco.Views.Products
             return View(product);
         }
 
+        // GET: Products/AddToCart/5
+        public async Task<IActionResult> AddToCart(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.Product
+                .FirstOrDefaultAsync(m => m.ProductID == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+
         // GET: Products/Create
         public IActionResult Create()
         {

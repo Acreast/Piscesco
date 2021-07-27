@@ -60,56 +60,57 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.ProductID)
-            </td>
-            <td class="center-td" style="max-width:75px">
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td class="center-td description-td">
-                @Html.DisplayFor(modelItem => item.ProductDescription)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.ProductUnit)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td style="text-align:center" class="description-td">
-                <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.StallID)
-            </td>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                var loginSession = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
-
+            <tr>
                 <td class="center-td">
-                    @if (loginSession.Role.Equals("Customer"))
-                    {
-                        var parms = new Dictionary<string, string>
-                        {
-                                    { "OrderID", loginSession.OrderID },
-                                    { "ProductID", item.ProductID.ToString() },
-                                    { "ProductQuantity", "1"}
-                        };
-                        <form asp-controller="TablesController" asp-action="AddOrderItem" 
-                              asp-route-OrderID="@loginSession.OrderID" 
-                              asp-route-ProductID="@item.ProductID.ToString()" 
-                              asp-route-ProductQuantity="1">
-                            <input type="submit" value="Add to Cart" />
-                        </form>
-                        
-                    }
-                    <a asp-action="Details" asp-route-id="@item.ProductID">View Details</a>
+                    @Html.DisplayFor(modelItem => item.ProductID)
                 </td>
-            }
-        </tr>
+                <td class="center-td" style="max-width:75px">
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td class="center-td description-td">
+                    @Html.DisplayFor(modelItem => item.ProductDescription)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.ProductUnit)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.Stock)
+                </td>
+                <td style="text-align:center" class="description-td">
+                    <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.StallID)
+                </td>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    var loginSession = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
+
+                    <td class="center-td">
+                        @if (loginSession.Role.Equals("Customer"))
+                        {
+                            /*
+                            <form asp-controller="Tables" asp-action="AddOrderItem"
+                                  asp-route-OrderID="@loginSession.OrderID"
+                                  asp-route-ProductID="@item.ProductID.ToString()"
+                                  asp-route-ProductQuantity="1">
+                                <input type="submit" value="Add to Cart" />
+                            </form>
+                            */
+                            <a asp-action="AddToCart" asp-route-id="@item.ProductID">Add to Cart</a><p style="display: inline-block"> | </p>
+                        }
+                        <a asp-action="Details" asp-route-id="@item.ProductID">View Details</a>
+                    </td>
+                }
+            </tr>
         }
     </tbody>
 </table>
+
+<!-- if there are any message pass into here, then show the message -->
+@if ((@ViewBag.Message != null) && (@ViewBag.Message != "") && (@ViewBag.Message)) {
+<script>alert("@ViewBag.Message"); </script>
+}

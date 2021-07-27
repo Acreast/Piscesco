@@ -30,18 +30,19 @@
 
         if (loginSession.Role.Equals("Customer"))
         {
-            // check if the customer having an order_id or not, if not automatically create for them
+            /*
             if (loginSession.OrderID == null)
             {
-
-                TablesController cart = new TablesController(UserManager, SignInManager);
-                await cart.InitializedOrderHeaderAsync(loginSession.Id);
+                // define an empty orderID if its not yet created
+                TablesController tables = new TablesController(UserManager, SignInManager);
+                await tables.UpdateUserOrderID(loginSession.Id);
             }
+            */
             <li class="nav-item">
                 <a id="browse" class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="BrowseProduct">Browse Product</a>
             </li>
             <li class="nav-item">
-                <a id="cart" class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="CartItems">Cart Items</a>
+                <a id="cart" class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="CartList">Cart List</a>
             </li>
         }
     }

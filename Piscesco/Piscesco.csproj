@@ -16,6 +16,8 @@
     <Compile Remove="Migrations\PiscescoModel\20210722125702_ProductStallTable.Designer.cs" />
     <Compile Remove="Migrations\PiscescoModel\20210722130338_ProductStallTable.cs" />
     <Compile Remove="Migrations\PiscescoModel\20210722130338_ProductStallTable.Designer.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210726220212_OrderController.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210726220212_OrderController.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +38,6 @@
 
   <ItemGroup>
     <Folder Include="Views\ProductManagement\" />
-    <Folder Include="Views\Tables\" />
   </ItemGroup>
 
 </Project>
