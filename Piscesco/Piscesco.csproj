@@ -6,18 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\PiscescoModel\20210722123442_AddProductImageColumn.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722123442_AddProductImageColumn.Designer.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722125013_StallProductTable.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722125013_StallProductTable.Designer.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722125430_ProductStallTable.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722125430_ProductStallTable.Designer.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722125702_ProductStallTable.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722125702_ProductStallTable.Designer.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722130338_ProductStallTable.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210722130338_ProductStallTable.Designer.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210726032937_FeaturedProductTable.cs" />
-    <Compile Remove="Migrations\PiscescoModel\20210726032937_FeaturedProductTable.Designer.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210727125444_OrderTable.cs" />
+    <Compile Remove="Migrations\PiscescoModel\20210727125444_OrderTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

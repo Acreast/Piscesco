@@ -86,6 +86,12 @@ namespace Piscesco.Views.Products
             return View();
         }
 
+        // GET: Products
+        public async Task<IActionResult> BrowseProducts(int? id)
+        {
+            return View(await _context.Product.ToListAsync());
+        }
+
 
 
         // GET: Products/Details/5
@@ -288,6 +294,60 @@ namespace Piscesco.Views.Products
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(StallCatchSetup));
         }
+
+        // GET: Products/AddToCart/5
+        public async Task<IActionResult> AddToCartPage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.Product
+                .FirstOrDefaultAsync(m => m.ProductID == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Product"] = product;
+            return View();
+        }
+
+
+        [HttpPost]
+        [ActionName("AddToCart")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToCart([Bind("OrderID,StallID,ProductID,ProductName,ProductQuantity,TotalPrice,Status,TransactionDate")] Order order)
+        {
+            if (ModelState.IsValid)
+            {
+                //If product does no exist
+                var product = await _context.Product.FindAsync(order.ProductID);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                int productStock = product.Stock - order.ProductQuantity;
+                //Setup order
+                order.Status = "Pending";
+                if (productStock < 0)
+                {
+                    TempData["Message"] = "Invalid quantity, the product: " + order.ProductName + " does not have that much quantity in stock";
+                    return RedirectToAction("AddToCartPage", new { id = order.ProductID });
+                }
+                product.Stock = productStock;
+                order.OwnerID = _userManager.GetUserId(User);
+                order.TotalPrice = product.Price * order.ProductQuantity;
+                _context.Update(product);
+                _context.Add(order);
+
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("AddToCartPage", new { id=order.ProductID});
+        }
+
+
 
         private bool ProductExists(int id)
         {
