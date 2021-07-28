@@ -18,6 +18,9 @@
             <li class="nav-item">
                 <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Stalls" asp-action="Index">Manage Stalls</a>
             </li>
+            <li class="nav-item">
+                <a id="manage" class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="StallList">Manage Orders</a>
+            </li>
         }
         else if (loginSession.Role.Equals("Customer"))
         {
