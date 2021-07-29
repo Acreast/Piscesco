@@ -7,7 +7,7 @@
     BlobsController bc = new BlobsController();
 }
 
-<h1>Order List</h1>
+<h1>Product List</h1>
 
 <p>
 
@@ -55,7 +55,7 @@
                 @Html.DisplayFor(modelItem => item.Stock)
             </td>
             <td style="text-align:center" class="description-td">
-                <img src="@bc.GetImage(orderProduct.ProductImage)" style="max-height:75px;max-width:100px" />
+                <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
             </td>
             <td class="center-td">
                 <a asp-action="Edit" asp-route-id="@item.ProductID">Edit</a> |

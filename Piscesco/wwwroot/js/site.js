@@ -4,7 +4,3 @@
 // Write your JavaScript code.
 
 
-$(".addButton").click(function () {
-    $(".selectedCardColumn").append("<p>Test</p>");
-}
-)

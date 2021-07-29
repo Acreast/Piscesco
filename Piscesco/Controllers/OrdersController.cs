@@ -18,6 +18,8 @@ namespace Piscesco.Controllers
         private readonly PiscescoModelContext _context;
         private readonly UserManager<PiscescoUser> _userManager;
         private static int _stallID;
+        private static DateTime _startingDate;
+        private static DateTime _endDate;
 
         public OrdersController(PiscescoModelContext context, UserManager<PiscescoUser> userManager)
         {
@@ -26,25 +28,75 @@ namespace Piscesco.Controllers
         }
 
 
-        // GET: Orders
+        // GET: Stall all orders
         public async Task<IActionResult> OrderByStall(int? id)
         {
 
             if (id.HasValue)
             {
-                //Debug.WriteLine(id);
                 _stallID = (int)id;
             }
-            Debug.WriteLine(_stallID);
             var products = from p in _context.Product select p;
             products = products.Where(item => item.StallID.Equals(_stallID));
             
             ViewData["Products"] = products;
 
-            var orderList = await _context.Order.Where(orderItem => orderItem.StallID == _stallID && orderItem.Status == "Placed").ToListAsync();
+            var orderList = await _context.Order.Where(orderItem => orderItem.StallID == _stallID && orderItem.Status == "Pending").ToListAsync();
 
             return View(orderList);
         }
+
+        // GET: Stall orders by date
+        public async Task<IActionResult> OrderByDate(string start, DateTime? date)
+        {
+            //Debug.WriteLine((DateTime)date);
+
+            if (!String.IsNullOrEmpty(start))
+            {
+                _startingDate = Convert.ToDateTime(start);
+            }
+
+            if (date.HasValue)
+            {
+                _startingDate = (DateTime)date;
+            }
+            var products = from p in _context.Product select p;
+            products = products.Where(item => item.StallID.Equals(_stallID));
+
+            ViewData["Products"] = products;
+
+            //var orderList = await _context.Order.Where(orderItem => orderItem.StallID == _stallID && orderItem.Status == "Pending").ToListAsync();
+
+            var orderList =  _context.Order.
+                FromSqlRaw("SELECT * FROM [Order] WHERE TransactionDate >= " + "'"+_startingDate.ToString("yyyy-MM-dd")+"'" + "AND TransactionDate <= '" +_startingDate.AddDays(1).AddTicks(-1) + "'")
+                .ToList();
+            ViewData["DateOfOrder"] = _startingDate.ToString("yyyy-MM-dd");
+
+            return View(orderList);
+        }
+
+        //Get orders by date
+        public PartialViewResult SearchByDate(string start)
+        {
+            Debug.WriteLine(start);
+            if (!String.IsNullOrEmpty(start))
+            {
+                _startingDate = Convert.ToDateTime(start);
+            }
+
+            var products = from p in _context.Product select p;
+            products = products.Where(item => item.StallID.Equals(_stallID));
+
+            ViewData["Products"] = products;
+
+            var orderList = _context.Order.
+                FromSqlRaw("SELECT * FROM [Order] WHERE TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _startingDate.AddDays(1).AddTicks(-1) + "'")
+                .ToList();
+            ViewData["DateOfOrder"] = _startingDate.ToString("yyyy-MM-dd");
+
+            return PartialView("_OrderPartialView",orderList);
+        }
+
 
         public async Task<IActionResult> StallList()
         {
@@ -56,7 +108,7 @@ namespace Piscesco.Controllers
         }
 
         // GET: Orders/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid? id, int? pid)
         {
             if (id == null)
             {
@@ -69,6 +121,12 @@ namespace Piscesco.Controllers
             {
                 return NotFound();
             }
+            if(pid == null)
+            {
+                return NotFound();
+            }
+            var product = await _context.Product.FindAsync(pid);
+            ViewData["Product"] = product;
 
             return View(order);
         }
@@ -176,14 +234,9 @@ namespace Piscesco.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public Uri GetImageByProductID(int productid)
-        {
-            BlobsController bc = new BlobsController();
-            var products = from p in _context.Product select p;
-            Product product = products.FirstOrDefault(item => item.ProductID == productid);
-            return bc.GetImage(product.ProductImage);
 
-        }
+
+
 
 
         private bool OrderExists(Guid id)
