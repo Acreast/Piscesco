@@ -5,6 +5,7 @@
     ViewData["Title"] = "BrowseStalls";
     Layout = "~/Views/Shared/_Layout.cshtml";
     BlobsController bc = new BlobsController();
+    IEnumerable<Product> featuredProduct = ViewData["FeaturedProducts"] as IEnumerable<Product>;
 }
 
 <h1>Choose the stall you intended to browse</h1>

@@ -75,6 +75,9 @@
 </div>
 <form asp-action="AddToCart">
     <div class="form-group" style="width:200px">
+        <label asp-for="ProductQuantity" class="control-label"></label>
+        <input asp-for="ProductQuantity" class="form-control" required min="1" max="@product.Stock"/>
+        <span asp-validation-for="ProductQuantity" class="text-danger"></span>
         @if (SignInManager.IsSignedIn(User))
         {
             var loginSession = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
@@ -104,5 +107,6 @@
 </form>
 
 <div>
+    <a asp-action="BrowseProducts">Back to List</a>
     <a asp-action="BrowseProducts">Back to Browse</a>
 </div>

@@ -80,14 +80,6 @@ body {
     max-width:205px;
 }
 
-
-.datepicker td, .datepicker th {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 0.85rem;
+.card-body > img{
+    max-height:150px;
 }
-
-.datepicker {
-    margin-bottom: 3rem;
-}
-
