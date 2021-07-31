@@ -1,5 +1,10 @@
 ﻿@model IEnumerable<Piscesco.Models.Product>
 @using Piscesco.Controllers
+@using Microsoft.AspNetCore.Identity
+@using Piscesco.Areas.Identity.Data
+
+@inject SignInManager<PiscescoUser> SignInManager
+@inject UserManager<PiscescoUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
@@ -12,6 +17,18 @@
     <h1 class="d-flex justify-content-start">Product List</h1>
 </div>
 
+<!-- method and action being left empty due to action to submit at the same page. method if didnt mention will automatically defined as get method -->
+<form>
+    <!-- provide a text box for filteration based on the product name -->
+    Search: <input type="text" name="ProductName" />
+    <br /><br />
+    <input type="submit" name="search" value="Search Product" />
+    <br /><br />
+</form>
+
+<p>
+    <a asp-action="BrowseStalls" asp-route-stallID="">Back to Browse Stalls</a>
+</p>
 
 
 @if (featuredProduct.FirstOrDefault() != null)
