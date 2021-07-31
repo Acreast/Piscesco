@@ -27,12 +27,29 @@ namespace Piscesco.Views.Products
         {
             _context = context;
             _userManager = userManager;
+        }
 
+        // GET: Stalls
+        public async Task<IActionResult> BrowseStalls(String StallName)
+        {
+            // technically just like SQL query
+            var stall = from m in _context.Stall
+                        select m; // selecting the product/data from the context product
 
+            // to check whether its there or not
+            if (!string.IsNullOrEmpty(StallName))
+            {
+                // s stands for database variable, ProductName is the table column
+                stall = stall.Where(s => s.StallName.Contains(StallName));
+            }
+
+            // Default: this is to display the entire page/data on load, we will change it to only show after filter
+            // return View(await _context.Product.ToListAsync());
+            return View(await stall.ToListAsync());
         }
 
         // GET: Products
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(int? id, String ProductName)
         {
             if (id.HasValue)
             {
@@ -40,10 +57,17 @@ namespace Piscesco.Views.Products
                 _stallID = (int)id;
             }
             var products = from p in _context.Product select p;
+
+            // to check whether its there or not
+            if (!string.IsNullOrEmpty(ProductName))
+            {
+                // s stands for database variable, ProductName is the table column
+                products = products.Where(item => item.ProductName.Contains(ProductName));
+            }
+
             products = products.Where(item => item.StallID.Equals(_stallID));
 
-
-            return View(products);
+            return View(await products.ToListAsync());
         }
 
         // GET: Products
@@ -87,12 +111,31 @@ namespace Piscesco.Views.Products
         }
 
         // GET: Products
-        public async Task<IActionResult> BrowseProducts(int? id)
+        public async Task<IActionResult> BrowseProducts(int? id, String ProductName)
         {
-            return View(await _context.Product.ToListAsync());
+            if (id.HasValue)
+            {
+                //Debug.WriteLine(id);
+                _stallID = (int)id;
+            }
+            var products = from p in _context.Product select p;
+
+            // to check whether its there or not
+            if (!string.IsNullOrEmpty(ProductName))
+            {
+                // s stands for database variable, ProductName is the table column
+                products = products.Where(item => item.ProductName.Contains(ProductName));
+                
+            }
+
+            products = products.Where(item => item.StallID.Equals(_stallID));
+
+            // Default: this is to display the entire page/data on load, we will change it to only show after filter
+            // return View(await _context.Product.ToListAsync());
+            return View(await products.ToListAsync());
         }
 
-
+        
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -310,7 +353,22 @@ namespace Piscesco.Views.Products
                 return NotFound();
             }
 
+            // technically just like SQL query
+            var order = from m in _context.Order
+                        select m; // selecting the product/data from the context product
+
+            // check if the user have the existing product within the ongoing order or not
+            order = order.Where(item => item.ProductID.Equals((int)id));
+            order = order.Where(item => item.OwnerID == (_userManager.GetUserId(User)));
+            order = (order.Where(item => item.Status == "Pending"));
+
+            if (order.Any())
+            {
+                ViewData["Order"] = order.First();
+            }
+
             ViewData["Product"] = product;
+
             return View();
         }
 
@@ -329,6 +387,7 @@ namespace Piscesco.Views.Products
                     return NotFound();
                 }
                 int productStock = product.Stock - order.ProductQuantity;
+
                 //Setup order
                 order.Status = "Pending";
                 if (productStock < 0)
@@ -336,15 +395,38 @@ namespace Piscesco.Views.Products
                     TempData["Message"] = "Invalid quantity, the product: " + order.ProductName + " does not have that much quantity in stock";
                     return RedirectToAction("AddToCartPage", new { id = order.ProductID });
                 }
-                product.Stock = productStock;
-                order.OwnerID = _userManager.GetUserId(User);
-                order.TotalPrice = product.Price * order.ProductQuantity;
-                _context.Update(product);
-                _context.Add(order);
 
-                await _context.SaveChangesAsync();
+                // product.Stock = productStock;
+
+                // check if user ongoing cart have the existing product or not
+                var orderitem = from m in _context.Order
+                            select m; // selecting the product/data from the context product
+                orderitem = orderitem.Where(item => item.ProductID.Equals(order.ProductID));
+                orderitem = orderitem.Where(item => item.OwnerID == (_userManager.GetUserId(User)));
+                orderitem = (orderitem.Where(item => item.Status == "Pending"));
+
+                if (orderitem.Any())
+                {
+                    // if it existed then we update instead
+                    var itemcontent = orderitem.First();
+                    itemcontent.ProductQuantity = order.ProductQuantity;
+
+                    _context.Update(itemcontent);
+
+                    await _context.SaveChangesAsync();
+                } else
+                {
+                    // if not then add to cart instead
+                    order.OwnerID = _userManager.GetUserId(User);
+                    order.TotalPrice = product.Price * order.ProductQuantity;
+
+                    // _context.Update(product);
+                    _context.Add(order);
+
+                    await _context.SaveChangesAsync();
+                }
             }
-            return RedirectToAction("AddToCartPage", new { id=order.ProductID});
+            return RedirectToAction("AddToCartPage", new { id=order.ProductID });
         }
 
 

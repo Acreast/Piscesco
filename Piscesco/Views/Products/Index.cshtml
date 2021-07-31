@@ -9,6 +9,15 @@
 
 <h1>Product List</h1>
 
+<!-- method and action being left empty due to action to submit at the same page. method if didnt mention will automatically defined as get method -->
+<form>
+    <!-- provide a text box for filteration based on the product name -->
+    Search: <input type="text" name="ProductName" />
+    <br /><br />
+    <input type="submit" name="search" value="Search Product" />
+    <br /><br />
+</form>
+
 <p>
 
 </p>
@@ -37,32 +46,33 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.ProductID)
-            </td>
-            <td class="center-td" style="max-width:75px">
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.ProductUnit)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td style="text-align:center" class="description-td">
-                <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
-            </td>
-            <td class="center-td">
-                <a asp-action="Edit" asp-route-id="@item.ProductID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.ProductID)
+                </td>
+                <td class="center-td" style="max-width:75px">
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.ProductUnit)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.Stock)
+                </td>
+                <td style="text-align:center" class="description-td">
+                    <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
+                </td>
+                <td class="center-td">
+                    <a asp-action="Edit" asp-route-id="@item.ProductID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ProductID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ProductID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

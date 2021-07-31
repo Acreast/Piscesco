@@ -20,8 +20,6 @@ namespace Piscesco.Views.Stalls
         private readonly PiscescoModelContext _context;
         private readonly UserManager<PiscescoUser> _userManager;
 
-
-
         public StallsController(PiscescoModelContext context, UserManager<PiscescoUser> userManager)
         {
             _context = context;
@@ -29,10 +27,18 @@ namespace Piscesco.Views.Stalls
         }
 
         // GET: Stalls
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(String StallName)
         {
             var loginSession = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var stalls = from s in _context.Stall select s;
+
+            // to check whether its there or not
+            if (!string.IsNullOrEmpty(StallName))
+            {
+                // s stands for database variable, ProductName is the table column
+                stalls = stalls.Where(s => s.StallName.Contains(StallName));
+            }
+
             stalls = stalls.Where(item => item.OwnerID.Equals(loginSession.Id));
             
             return View(await stalls.ToListAsync());

@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<Piscesco.Models.Product>
 @using Piscesco.Controllers
+@using Microsoft.AspNetCore.Identity
+@using Piscesco.Areas.Identity.Data
 
 @{
     ViewData["Title"] = "Index";
@@ -7,12 +9,22 @@
     BlobsController bc = new BlobsController();
 }
 
+@inject SignInManager<PiscescoUser> SignInManager
+@inject UserManager<PiscescoUser> UserManager
+
 <h1>Product List</h1>
 
-<p>
-    <a asp-action="Create" asp-route-stallID="">Create New</a> | 
+<!-- method and action being left empty due to action to submit at the same page. method if didnt mention will automatically defined as get method -->
+<form>
+    <!-- provide a text box for filteration based on the product name -->
+    Search: <input type="text" name="ProductName" />
+    <br /><br />
+    <input type="submit" name="search" value="Search Product" />
+    <br /><br />
+</form>
 
-    <a asp-action="StallCatchSetup" asp-route-stallID="">Set today's catch</a>
+<p>
+    <a asp-action="BrowseStalls" asp-route-stallID="">Back to Browse Stalls</a>
 </p>
 <table class="table">
     <thead>
@@ -39,30 +51,31 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.ProductID)
-            </td>
-            <td class="center-td" style="max-width:75px">
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.ProductUnit)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td style="text-align:center" class="description-td">
-                <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
-            </td>
-            <td class="center-td">
-                <a asp-action="AddToCartPage" asp-route-id="@item.ProductID">Details</a> 
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.ProductID)
+                </td>
+                <td class="center-td" style="max-width:75px">
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.ProductUnit)
+                </td>
+                <td class="center-td">
+                    @Html.DisplayFor(modelItem => item.Stock)
+                </td>
+                <td style="text-align:center" class="description-td">
+                    <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
+                </td>
+                <td class="center-td">
+                    <a asp-action="AddToCartPage" asp-route-id="@item.ProductID">Details</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

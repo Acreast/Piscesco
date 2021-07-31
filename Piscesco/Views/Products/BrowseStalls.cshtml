@@ -2,12 +2,12 @@
 @using Piscesco.Controllers
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "BrowseStalls";
     Layout = "~/Views/Shared/_Layout.cshtml";
     BlobsController bc = new BlobsController();
 }
 
-<h1>Index</h1>
+<h1>Choose the stall you intended to browse</h1>
 
 <!-- method and action being left empty due to action to submit at the same page. method if didnt mention will automatically defined as get method -->
 <form>
@@ -18,9 +18,6 @@
     <br /><br />
 </form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -50,9 +47,7 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td class="center-td">
-                    <a asp-action="Edit" asp-route-id="@item.StallID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.StallID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.StallID">Delete</a>
+                    <a asp-action="BrowseProducts" asp-route-id="@item.StallID">Details</a>
                 </td>
             </tr>
         }
