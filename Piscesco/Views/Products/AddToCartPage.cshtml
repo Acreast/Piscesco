@@ -1,22 +1,26 @@
 ﻿@model Piscesco.Models.Order
 @using Piscesco.Controllers
+@using Microsoft.AspNetCore.Identity
+@using Piscesco.Areas.Identity.Data
+
+@inject SignInManager<PiscescoUser> SignInManager
+@inject UserManager<PiscescoUser> UserManager
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
     BlobsController bc = new BlobsController();
     Product product = ViewData["Product"] as Product;
+    Order order = ViewData["Order"] as Order;
     Uri imageUri = bc.GetImage(product.ProductImage);
 }
 
-@if (TempData["Message"]!= null)
+@if (TempData["Message"] != null)
 {
     <script>alert("@TempData["Message"]");</script>
 }
 
 <h1>Details</h1>
-
-
 
 <div>
     <h4>Product</h4>
@@ -68,15 +72,31 @@
 </div>
 <form asp-action="AddToCart">
     <div class="form-group" style="width:200px">
-        <label asp-for="ProductQuantity" class="control-label"></label>
-        <input asp-for="ProductQuantity" class="form-control" required min="1" max="@product.Stock"/>
-        <span asp-validation-for="ProductQuantity" class="text-danger"></span>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            var loginSession = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
+
+            if (loginSession.Role == "Customer")
+            {
+                <label asp-for="ProductQuantity" class="control-label"></label>
+                <input asp-for="ProductQuantity" value="@(order != null ? order.ProductQuantity : 1)" min="1" max="@product.Stock" class="form-control" />
+                <span asp-validation-for="ProductQuantity" class="text-danger"></span>
+            }
+        }
     </div>
     <div class="form-group">
         <input asp-for="StallID" type="hidden" class="form-control" value="@product.StallID" />
         <input asp-for="ProductID" type="hidden" class="form-control" value="@product.ProductID" />
         <input asp-for="ProductName" type="hidden" class="form-control" value="@product.ProductName" />
-        <input type="submit" value="Add To Cart" class="btn btn-success" />
+        @if (SignInManager.IsSignedIn(User))
+        {
+            var loginSession = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
+
+            if (loginSession.Role == "Customer")
+            {
+                <input type="submit" value="Add To Cart" @(product.Stock == 0 ? "disabled" : "enabled") class="btn btn-success" />
+            }
+        }
     </div>
 </form>
 
