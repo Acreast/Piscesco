@@ -7,9 +7,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.WindowsAzure.Storage.Table;
 using Piscesco.Areas.Identity.Data;
 using Piscesco.Data;
 using Piscesco.Models;
+using Piscesco.Controllers;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Microsoft.WindowsAzure.Storage;
 
 namespace Piscesco.Controllers
 {
@@ -18,6 +23,7 @@ namespace Piscesco.Controllers
         private readonly PiscescoModelContext _context;
         private readonly UserManager<PiscescoUser> _userManager;
         private static int _stallID;
+        private static int _userID;
         private static DateTime _startingDate;
         private static DateTime _endDate;
 
@@ -27,6 +33,29 @@ namespace Piscesco.Controllers
             _userManager = userManager;
         }
 
+        // GET: Cart Items
+        public async Task<IActionResult> CartList()
+        {
+            var products = from p in _context.Product select p;
+
+            ViewData["Products"] = products;
+
+            var orderList = await _context.Order.Where(orderItem => orderItem.OwnerID.Equals(_userManager.GetUserId(User)) && orderItem.Status == "Pending").ToListAsync();
+
+            return View(orderList);
+        }
+
+        // GET: Transaction History
+        public async Task<IActionResult> TransactionHistory()
+        {
+            var products = from p in _context.Product select p;
+
+            ViewData["Products"] = products;
+
+            var orderList = await _context.Order.Where(orderItem => orderItem.OwnerID.Equals(_userManager.GetUserId(User)) && orderItem.Status == "Purchased").ToListAsync();
+             
+            return View(orderList);
+        }
 
         // GET: Stall all orders
         public async Task<IActionResult> OrderByStall(int? id)
@@ -145,6 +174,42 @@ namespace Piscesco.Controllers
             }
             var product = await _context.Product.FindAsync(pid);
             ViewData["Product"] = product;
+
+            // proceed to get the related tablestorage entity value: feedback description if exist
+            // 1.1 link with the appsettings.json
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+            IConfiguration configure = builder.Build();
+
+            //1.2 get the access connection string
+            CloudStorageAccount accountDetails = CloudStorageAccount.Parse(configure["ConnectionStrings:BlobStorageConnection"]);
+
+            //1.3 create client object to refer to the correct table
+            CloudTableClient clientAgent = accountDetails.CreateCloudTableClient();
+            CloudTable table = clientAgent.GetTableReference("feedback");
+
+            try
+            {
+                TableOperation retrieveOperation = TableOperation.Retrieve<FeedbackEntity>(order.OwnerID, id.ToString());
+                TableResult result = table.ExecuteAsync(retrieveOperation).Result; // getting the result along with ETag
+
+                if (result.Etag != null)
+                {
+                    // getting the description back to the form
+                    var feedbackItem = result.Result as FeedbackEntity;
+
+                    ViewData["Feedback"] = feedbackItem;
+                }
+                else
+                {
+                    ViewData["Feedback"] = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewData["Feedback"] = null;
+            }
 
             return View(order);
         }

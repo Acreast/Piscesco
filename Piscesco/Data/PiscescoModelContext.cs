@@ -21,5 +21,7 @@ namespace Piscesco.Data
         public DbSet<Piscesco.Models.FeaturedProduct> FeaturedProduct { get; set; }
 
         public DbSet<Piscesco.Models.Order> Order { get; set; }
+
+        public DbSet<Piscesco.Models.FeedbackEntity> FeedbackEntity { get; set; }
     }
 }

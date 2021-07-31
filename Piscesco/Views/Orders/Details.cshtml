@@ -10,6 +10,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     BlobsController bc = new BlobsController();
     Product product = ViewData["Product"] as Product;
+    FeedbackEntity feedback = ViewData["Feedback"] as FeedbackEntity;
     Uri imageUri = bc.GetImage(product.ProductImage);
     var user = await UserManager.FindByIdAsync(Model.OwnerID);
 }
@@ -69,7 +70,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TotalPrice)
         </dd>
-
+        <dt class="col-sm-2">
+            Customer Feedback
+        </dt>
+        <dd class="col-sm-10">
+            @(feedback != null ? feedback.FeedbackDescription : "-")
+        </dd>
     </dl>
 </div>
 <div>

@@ -366,7 +366,6 @@ namespace Piscesco.Views.Products
             return View();
         }
 
-
         [HttpPost]
         [ActionName("AddToCart")]
         [ValidateAntiForgeryToken]
@@ -406,6 +405,8 @@ namespace Piscesco.Views.Products
                     itemcontent.ProductQuantity = order.ProductQuantity;
 
                     _context.Update(itemcontent);
+                    
+                    TempData["Message"] = "Product : " + order.ProductName + " quantity updated.";
 
                     await _context.SaveChangesAsync();
                 }
@@ -424,7 +425,96 @@ namespace Piscesco.Views.Products
             return RedirectToAction("AddToCartPage", new { id = order.ProductID });
         }
 
+        [HttpPost]
+        [ActionName("RemoveFromCart")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFromCart (Guid id)
+        {
+            //If product does not exist
+            var cartitem = await _context.Order.FindAsync(id);
+            if (cartitem == null)
+            {
+                // return NotFound();
 
+                TempData["Message"] = "Notice: The selected product already removed from the cart.";
+                return RedirectToAction("CartList");
+            }
+
+            // if the cart item exist, then proceed to deletion
+            _context.Order.Remove(cartitem);
+            await _context.SaveChangesAsync();
+            TempData["Message"] = "Notice: Product " + cartitem.ProductName + " removed from the cart.";
+
+            return RedirectToAction("CartList", "Orders");
+        }
+
+        [HttpPost]
+        [ActionName("CheckoutCart")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckoutCart()
+        {
+            // check if the cart items existed
+            // check if user ongoing cart have the existing product or not
+            var orderitem = from m in _context.Order
+                            select m; // selecting the product/data from the context product
+            orderitem = orderitem.Where(item => item.OwnerID == (_userManager.GetUserId(User)));
+            orderitem = (orderitem.Where(item => item.Status == "Pending"));
+
+            if (orderitem.Any())
+            {
+                // if it existed then we proceed to check the product quantity whether it exceeds the stock quantity or not
+                bool valid = false;
+                foreach (var cartItem in orderitem)
+                {
+                    var product = from p in _context.Product select p;
+                    product = product.Where(item => item.ProductID == (cartItem.ProductID));
+                    var productcontent = product.First();
+
+                    if (productcontent.Stock >= cartItem.ProductQuantity)
+                    {
+                        valid = true;
+                    } else
+                    {
+                        valid = false;
+                        if (productcontent.Stock == 0)
+                        {
+                            TempData["Message"] = "Notice: Product " + cartItem.ProductName + " is no longer available, please remove from your cart to proceed checkout.";
+                        } else
+                        {
+                            TempData["Message"] = "Notice: Product " + cartItem.ProductName + " exceeds the available quantity of " + productcontent.Stock + ". Please edit and try again.";
+                        }
+
+                        return RedirectToAction("CartList", "Orders");
+                    }
+                }
+
+                if (valid == true)
+                {
+                    // if it didnt exceed, then update the status and reduce the stock from the product accordingly
+                    foreach (var cartItem in orderitem)
+                    {
+                        var product = from p in _context.Product select p;
+                        product = product.Where(item => item.ProductID == (cartItem.ProductID));
+                        var productcontent = product.First();
+
+                        var productQuantity = productcontent.Stock - cartItem.ProductQuantity;
+                        productcontent.Stock = productQuantity;
+
+                        cartItem.Status = "Purchased";
+                        cartItem.TransactionDate = DateTime.Now;
+
+                        _context.Order.Update(cartItem);
+                        _context.Product.Update(productcontent);
+                    }
+
+                    TempData["Message"] = "Notice: Cart checked out, you may check it via the transaction history.";
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToAction("CartList", "Orders");
+        }
 
         private bool ProductExists(int id)
         {

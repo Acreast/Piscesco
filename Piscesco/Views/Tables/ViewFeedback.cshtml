@@ -1,0 +1,50 @@
+﻿@model Piscesco.Models.FeedbackEntity
+@using Microsoft.AspNetCore.Identity
+@using Piscesco.Areas.Identity.Data
+
+@inject SignInManager<PiscescoUser> SignInManager
+@inject UserManager<PiscescoUser> UserManager
+
+@{
+    ViewData["Title"] = "ViewFeedback";
+    string orderID = ViewData["orderID"] as string;
+}
+
+<h1>Feedback</h1>
+
+@if (TempData["Message"] != null)
+{
+    <script>alert("@TempData["Message"]");</script>
+}
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Tables" method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Order ID</label>
+                <input asp-for="RowKey" value="@orderID" disabled class="form-control" />
+                <input type="hidden" asp-for="RowKey" value="@orderID" class="form-control" />
+                <span asp-validation-for="RowKey" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FeedbackDescription" class="control-label"></label>
+                <input asp-for="FeedbackDescription" required class="form-control" />
+                <span asp-validation-for="FeedbackDescription" value="@(Model != null ? Model.FeedbackDescription : "")" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" asp-action="ProvideFeedback" value="@(Model != null ? "Update Feedback" : "Review")" class="btn btn-primary" />
+                @if (Model != null)
+                {
+                    <input type="submit" asp-action="DeleteFeedback" value="Delete" asp-route-RowKey="@orderID" class="btn btn-danger" />
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Orders" asp-action="TransactionHistory">Back to List</a>
+</div>
+
