@@ -94,12 +94,12 @@
 
             if (loginSession.Role == "Customer")
             {
-                <input type="submit" value="Add To Cart" @(product.Stock == 0 ? "disabled" : "enabled") class="btn btn-success" />
+                <input type="submit" value="@(order != null ? "Update Cart" : "Add to cart")" @(product.Stock == 0 ? "disabled" : "enabled") class="btn btn-success" />
             }
         }
     </div>
 </form>
 
 <div>
-    <a asp-action="BrowseProducts">Back to List</a>
+    <a asp-action="BrowseProducts" asp-route-id="@product.StallID">Back to List</a>
 </div>
