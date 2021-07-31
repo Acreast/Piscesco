@@ -11,7 +11,7 @@
     BlobsController bc = new BlobsController();
     decimal totalSales = 0;
 }
-<table class="table">
+<table class="table table-striped table-bordered" id="orderTable">
     <thead>
         <tr>
             <th>
@@ -19,6 +19,9 @@
             </th>
             <th>
                 Placed By
+            </th>
+            <th>
+                Date Placed
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ProductName)
@@ -46,31 +49,34 @@
                 orderProduct = product.Where(obj => obj.ProductID == item.ProductID).First();
             }
             totalSales += item.TotalPrice;
-            <tr>
-                <td class="center-td">
-                    @Html.DisplayFor(modelItem => item.OrderID)
-                </td>
-                <td class="center-td">
-                    @user.Name
-                </td>
-                <td class="center-td" style="max-width:75px">
-                    @Html.DisplayFor(modelItem => item.ProductName)
-                </td>
-                <td class="center-td">
-                    @Html.DisplayFor(modelItem => item.ProductQuantity)
-                </td>
-                <td class="center-td">
-                    @Html.DisplayFor(modelItem => item.TotalPrice)
-                </td>
-                <td style="text-align:center" class="description-td">
-                    <img src="@bc.GetImage(orderProduct.ProductImage)" style="max-height:75px;max-width:100px" />
-                </td>
-                <td class="center-td">
-                    <a asp-action="Details" asp-route-id="@item.OrderID" asp-route-pid="@orderProduct.ProductID">Details</a>
-                </td>
+        <tr>
+            <td class="center-td">
+                @Html.DisplayFor(modelItem => item.OrderID)
+            </td>
+            <td class="center-td">
+                @user.Name
+            </td>
+            <td class="center-td">
+                @item.TransactionDate.ToString("yyyy-MM-dd")
+            </td>
+            <td class="center-td" style="max-width:75px">
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td class="center-td">
+                @Html.DisplayFor(modelItem => item.ProductQuantity)
+            </td>
+            <td class="center-td">
+                @Html.DisplayFor(modelItem => item.TotalPrice)
+            </td>
+            <td style="text-align:center" class="description-td">
+                <img src="@bc.GetImage(orderProduct.ProductImage)" style="max-height:75px;max-width:100px" />
+            </td>
+            <td class="center-td">
+                <a asp-action="Details" asp-route-id="@item.OrderID" asp-route-pid="@orderProduct.ProductID">Details</a>
+            </td>
 
 
-            </tr>
+        </tr>
         }
     </tbody>
 </table>
@@ -81,9 +87,11 @@
 }
 else
 {
-    <div class="Total Sales">
-        <p>Total sales: @totalSales</p>
-    </div>
+<div class="float-right mt-4 mb-4" style="height:100px">
+    <h5>Total sales: @totalSales</h5>
+</div>
 
 }
+
+
 

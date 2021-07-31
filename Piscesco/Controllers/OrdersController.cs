@@ -41,47 +41,54 @@ namespace Piscesco.Controllers
             
             ViewData["Products"] = products;
 
-            var orderList = await _context.Order.Where(orderItem => orderItem.StallID == _stallID && orderItem.Status == "Pending").ToListAsync();
+            var orderList = await _context.Order.Where(orderItem => orderItem.StallID == _stallID && orderItem.Status == "Purchased").ToListAsync();
 
             return View(orderList);
         }
 
         // GET: Stall orders by date
-        public async Task<IActionResult> OrderByDate(string start, DateTime? date)
+        public async Task<IActionResult> OrderByDate(string start, string end)
         {
-            //Debug.WriteLine((DateTime)date);
 
             if (!String.IsNullOrEmpty(start))
             {
                 _startingDate = Convert.ToDateTime(start);
+                _endDate = Convert.ToDateTime(end);
             }
 
-            if (date.HasValue)
-            {
-                _startingDate = (DateTime)date;
-            }
             var products = from p in _context.Product select p;
             products = products.Where(item => item.StallID.Equals(_stallID));
 
             ViewData["Products"] = products;
 
             //var orderList = await _context.Order.Where(orderItem => orderItem.StallID == _stallID && orderItem.Status == "Pending").ToListAsync();
-
-            var orderList =  _context.Order.
-                FromSqlRaw("SELECT * FROM [Order] WHERE TransactionDate >= " + "'"+_startingDate.ToString("yyyy-MM-dd")+"'" + "AND TransactionDate <= '" +_startingDate.AddDays(1).AddTicks(-1) + "'")
+            List<Order> orderList;
+            if (start.Equals(end))
+            {
+                orderList = _context.Order.
+                FromSqlRaw("SELECT * FROM [Order] WHERE [Status] = 'Purchased' AND TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _startingDate.AddDays(1).AddTicks(-1) + "'")
                 .ToList();
-            ViewData["DateOfOrder"] = _startingDate.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                orderList = _context.Order.
+                FromSqlRaw("SELECT * FROM [Order] WHERE [Status] = 'Purchased' AND TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _endDate.ToString("yyyy-MM-dd") + "'")
+                .ToList();
+            }
+
+            ViewData["StartDate"] = _startingDate.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = _endDate.ToString("yyyy-MM-dd");
 
             return View(orderList);
         }
 
-        //Get orders by date
-        public PartialViewResult SearchByDate(string start)
+        //Get partial view
+        public PartialViewResult SearchByDate(string start, string end)
         {
-            Debug.WriteLine(start);
             if (!String.IsNullOrEmpty(start))
             {
                 _startingDate = Convert.ToDateTime(start);
+                _endDate = Convert.ToDateTime(end);
             }
 
             var products = from p in _context.Product select p;
@@ -89,10 +96,21 @@ namespace Piscesco.Controllers
 
             ViewData["Products"] = products;
 
-            var orderList = _context.Order.
-                FromSqlRaw("SELECT * FROM [Order] WHERE TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _startingDate.AddDays(1).AddTicks(-1) + "'")
+            List<Order> orderList;
+            if (start.Equals(end))
+            {
+                orderList = _context.Order.
+                FromSqlRaw("SELECT * FROM [Order] WHERE [Status] = 'Purchased' AND TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _startingDate.AddDays(1).AddTicks(-1) + "'")
                 .ToList();
-            ViewData["DateOfOrder"] = _startingDate.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                orderList = _context.Order.
+                FromSqlRaw("SELECT * FROM [Order] WHERE [Status] = 'Purchased' AND TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _endDate.ToString("yyyy-MM-dd") + "'")
+                .ToList();
+            }
+            ViewData["StartDate"] = _startingDate.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = _endDate.ToString("yyyy-MM-dd");
 
             return PartialView("_OrderPartialView",orderList);
         }
