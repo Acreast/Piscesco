@@ -5,64 +5,109 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
     BlobsController bc = new BlobsController();
+    IEnumerable<Product> featuredProduct = ViewData["FeaturedProducts"] as IEnumerable<Product>;
 }
 
-<h1>Product List</h1>
+<div class="d-flex flex-row">
+    <h1 class="d-flex justify-content-start">Product List</h1>
+</div>
 
-<p>
-    <a asp-action="Create" asp-route-stallID="">Create New</a> | 
 
-    <a asp-action="StallCatchSetup" asp-route-stallID="">Set today's catch</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductUnit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stock)
-            </th>
-            <th style="text-align:center">
-                @Html.DisplayNameFor(model => model.ProductImage)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.ProductID)
-            </td>
-            <td class="center-td" style="max-width:75px">
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.ProductUnit)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td style="text-align:center" class="description-td">
-                <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
-            </td>
-            <td class="center-td">
-                <a asp-action="AddToCartPage" asp-route-id="@item.ProductID">Details</a> 
-            </td>
-        </tr>
+
+@if (featuredProduct.FirstOrDefault() != null)
+{
+    <div class="card mb-3">
+        <img class="card-img-top" src="@bc.GetImage(featuredProduct.FirstOrDefault().ProductImage)" style=" object-fit: none; object-position: center; width: 100%; max-height: 300px;">
+        <div class="card-body" style="top: 165px; height:135px; border-top-style: solid; position: absolute; background-color: white; width: -webkit-fill-available; opacity: 0.8;">
+            <h5 class="card-title">@featuredProduct.FirstOrDefault().ProductName</h5>
+            <p class="card-text">@featuredProduct.FirstOrDefault().ProductDescription</p>
+            <p class="card-text"><small class="text-muted">Price: @featuredProduct.FirstOrDefault().Price / @featuredProduct.FirstOrDefault().ProductUnit</small></p>
+            <a class="stretched-link" asp-action="AddToCartPage" asp-route-id="@featuredProduct.FirstOrDefault().ProductID"></a>
+        </div>
+    </div>
 }
-    </tbody>
-</table>
+
+
+
+<div class="card-deck">
+    @foreach (var item in Model)
+    {
+
+
+        <div class="card col-4 pl-0 pr-0">
+            <img src="@bc.GetImage(item.ProductImage)" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">@item.ProductName</h5>
+                <p class="card-text">Price: @item.Price / @item.ProductUnit</p>
+                <a class="stretched-link" asp-action="AddToCartPage" asp-route-id="@item.ProductID"></a>
+            </div>
+        </div>
+
+
+    }
+</div>
+
+
+<div class="pr-0 p-3">
+    <a asp-action="BrowseStalls" class="float-right"> Back to stalls</a>
+</div>
+
+
+
+
+
+@*<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductUnit)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Stock)
+                </th>
+                <th style="text-align:center">
+                    @Html.DisplayNameFor(model => model.ProductImage)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="center-td">
+                        @Html.DisplayFor(modelItem => item.ProductID)
+                    </td>
+                    <td class="center-td" style="max-width:75px">
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </td>
+                    <td class="center-td">
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td class="center-td">
+                        @Html.DisplayFor(modelItem => item.ProductUnit)
+                    </td>
+                    <td class="center-td">
+                        @Html.DisplayFor(modelItem => item.Stock)
+                    </td>
+                    <td style="text-align:center" class="description-td">
+                        <img src="@bc.GetImage(item.ProductImage)" style="max-height:75px;max-width:100px" />
+                    </td>
+                    <td class="center-td">
+                        <a asp-action="AddToCartPage" asp-route-id="@item.ProductID">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+
+

@@ -91,3 +91,6 @@ body {
     margin-bottom: 3rem;
 }
 
+.card-body > img{
+    max-height:150px;
+}

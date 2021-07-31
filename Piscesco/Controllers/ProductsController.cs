@@ -89,7 +89,38 @@ namespace Piscesco.Views.Products
         // GET: Products
         public async Task<IActionResult> BrowseProducts(int? id)
         {
-            return View(await _context.Product.ToListAsync());
+            if(id == null)
+            {
+                return NotFound();
+            }
+            _stallID = (int)id;
+            var products = from p in _context.Product select p;
+            products = products.Where(item => item.StallID.Equals(_stallID));
+
+            var featuredProducts = from p in _context.FeaturedProduct select p;
+            featuredProducts = featuredProducts.Where(item => item.StallID.Equals(_stallID));
+
+            List<Product> featuredProductsList = new List<Product>();
+            foreach (var featuredItem in featuredProducts)
+            {
+                foreach (var productItem in products)
+                {
+                    if (featuredItem.ProductID.Equals(productItem.ProductID))
+                    {
+                        featuredProductsList.Add(productItem);
+                    }
+                }
+            }
+
+            ViewData["FeaturedProducts"] = featuredProductsList;
+
+            return View(products);
+
+        }
+
+        public async Task<IActionResult> BrowseStalls(int? id)
+        {
+            return View(await _context.Stall.ToListAsync());
         }
 
 
