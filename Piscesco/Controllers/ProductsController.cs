@@ -21,15 +21,26 @@ namespace Piscesco.Views.Products
         private readonly UserManager<PiscescoUser> _userManager;
         private static int _stallID;
 
-
-
         public ProductsController(PiscescoModelContext context, UserManager<PiscescoUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-
-
         }
+
+        public async Task<IActionResult> Index(int? id)
+        {
+            if (id.HasValue)
+            {
+                //Debug.WriteLine(id);
+                _stallID = (int)id;
+            }
+            var products = from p in _context.Product select p;
+            products = products.Where(item => item.StallID.Equals(_stallID));
+
+
+            return View(products);
+        }
+
         // GET: Products
         public async Task<IActionResult> StallCatchSetup(int? id)
         {
@@ -102,7 +113,10 @@ namespace Piscesco.Views.Products
                     }
                 }
             }
+            var stallInformation = from s in _context.Stall select s;
+            stallInformation = stallInformation.Where(item => item.StallID.Equals(_stallID));
 
+            ViewData["Stall"] = stallInformation.First();
             ViewData["FeaturedProducts"] = featuredProductsList;
 
             // Default: this is to display the entire page/data on load, we will change it to only show after filter
@@ -123,6 +137,10 @@ namespace Piscesco.Views.Products
                 // s stands for database variable, ProductName is the table column
                 stall = stall.Where(s => s.StallName.Contains(StallName));
             }
+
+            var products = from p in _context.Product select p; // selecting all product to show within the stall card
+
+            ViewData["Products"] = products;
 
             // Default: this is to display the entire page/data on load, we will change it to only show after filter
             // return View(await _context.Product.ToListAsync());
@@ -419,6 +437,8 @@ namespace Piscesco.Views.Products
                     // _context.Update(product);
                     _context.Add(order);
 
+                    TempData["Message"] = "Product : " + order.ProductName + " added into cart.";
+
                     await _context.SaveChangesAsync();
                 }
             }
@@ -511,6 +531,9 @@ namespace Piscesco.Views.Products
 
                     await _context.SaveChangesAsync();
                 }
+            } else
+            {
+                TempData["Message"] = "Notice: Cart item does not exist, please at least add one item into cart and try again.";
             }
 
             return RedirectToAction("CartList", "Orders");

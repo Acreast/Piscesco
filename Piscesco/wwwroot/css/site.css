@@ -83,3 +83,11 @@ body {
 .card-body > img{
     max-height:150px;
 }
+
+.category-image:before{
+    z-index: 1!important;
+}
+
+.seller-delete-btn:hover {
+    color: red!important;
+}

@@ -6,42 +6,46 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     BlobsController bc = new BlobsController();
 }
+<div class="main-wrapper">
+    <div class="container">
+        <h1>List of stalls that are owned by you</h1>
 
-<h1>List of stalls that are owned by you</h1>
+        <h2 class="stall-list-header2" style="padding-top:10px;padding-bottom:10px">Select stall to view orders</h2>
 
-<h2 class="stall-list-header2" style="padding-top:10px;padding-bottom:10px">Select stall to view orders</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.StallImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StallName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td style="text-align:center" class="center-td">
-                <img src="@bc.GetImage(item.StallImage)" style="max-height:50px;max-width:100px" />
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.StallName)
-            </td>
-            <td class="center-td">
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td class="center-td">
-                <a asp-action="OrderByStall" asp-route-id="@item.StallID">View</a> 
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <table class="table" style=" border: 2px solid #dee2e6; border-radius: 5px;">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.StallImage)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.StallName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="text-align:center" class="center-td">
+                            <img src="@bc.GetImage(item.StallImage)" style="max-height:50px;max-width:100px" />
+                        </td>
+                        <td class="center-td">
+                            @Html.DisplayFor(modelItem => item.StallName)
+                        </td>
+                        <td class="center-td">
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td class="center-td">
+                            <a asp-action="OrderByStall" asp-route-id="@item.StallID">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

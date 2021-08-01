@@ -37,8 +37,10 @@ namespace Piscesco.Controllers
         public async Task<IActionResult> CartList()
         {
             var products = from p in _context.Product select p;
-
             ViewData["Products"] = products;
+
+            var stalls = from s in _context.Stall select s;
+            ViewData["Stalls"] = stalls;
 
             var orderList = await _context.Order.Where(orderItem => orderItem.OwnerID.Equals(_userManager.GetUserId(User)) && orderItem.Status == "Pending").ToListAsync();
 
