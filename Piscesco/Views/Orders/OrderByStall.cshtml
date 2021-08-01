@@ -23,8 +23,8 @@
 
 
         <div class="tableWrapper">
-            <table class="table table-striped table-bordered" id="orderTable">
-                <thead>
+            <table class="table" id="orderTable" style=" border: 2px solid #dee2e6; border-radius: 5px;">
+                <thead class="thead-dark">
                     <tr>
                         <th>
                             @Html.DisplayNameFor(model => model.OrderID)
@@ -91,7 +91,19 @@
                         </tr>
                     }
                 </tbody>
+
             </table>
+            @if (totalSales == 0)
+            {
+
+            }
+            else
+            {
+                <div class="float-right mt-2">
+                    <h5>Total sales: @totalSales</h5>
+                </div>
+
+            }
         </div>
 
 

@@ -53,7 +53,7 @@
 
             <div class="tr-section tr-products">
                 <div class="product-category">
-                    <a href="listing.html" class="category-title">
+                    <a asp-action="BrowseProducts" asp-route-id="@item.StallID" class="category-title">
                         <h1>@item.StallName</h1> <span class="category-icon"> <img src="~/images/others/category4.png" alt="Icon" class="img-fluid"></span>
                     </a>
                     <ul class="tr-list category-list">
