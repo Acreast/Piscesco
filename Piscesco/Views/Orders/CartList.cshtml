@@ -87,7 +87,7 @@
                                     <div class="product-quantity">
                                         <div class="quantity" data-trigger="spinner">
                                             <a class="btn pull-left" asp-controller="Products" asp-action="AddToCartPage" asp-route-id="@item.ProductID"><i class="fa fa-minus"></i></a>
-                                            <input type="text" disabled name="quantity" value="1" title="quantity" class="input-text"> <a class="btn pull-right" asp-controller="Products" asp-action="AddToCartPage" asp-route-id="@item.ProductID"><i class="fa fa-plus"></i></a>
+                                            <input type="text" disabled name="quantity" value="@item.ProductQuantity" title="quantity" class="input-text"> <a class="btn pull-right" asp-controller="Products" asp-action="AddToCartPage" asp-route-id="@item.ProductID"><i class="fa fa-plus"></i></a>
                                         </div>
                                     </div>
                                 </div>
