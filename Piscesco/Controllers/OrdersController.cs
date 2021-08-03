@@ -103,7 +103,7 @@ namespace Piscesco.Controllers
             else
             {
                 orderList = _context.Order.
-                FromSqlRaw("SELECT * FROM [Order] WHERE [Status] = 'Purchased' AND TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _endDate.ToString("yyyy-MM-dd") + "'")
+                FromSqlRaw("SELECT * FROM [Order] WHERE [Status] = 'Purchased' AND TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _endDate.AddDays(1).AddTicks(-1) + "'")
                 .ToList();
             }
 
@@ -137,7 +137,7 @@ namespace Piscesco.Controllers
             else
             {
                 orderList = _context.Order.
-                FromSqlRaw("SELECT * FROM [Order] WHERE [Status] = 'Purchased' AND TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _endDate.ToString("yyyy-MM-dd") + "'")
+                FromSqlRaw("SELECT * FROM [Order] WHERE [Status] = 'Purchased' AND TransactionDate >= " + "'" + _startingDate.ToString("yyyy-MM-dd") + "'" + "AND TransactionDate <= '" + _endDate.AddDays(1).AddTicks(-1) + "'")
                 .ToList();
             }
             ViewData["StartDate"] = _startingDate.ToString("yyyy-MM-dd");

@@ -1,6 +1,4 @@
 ﻿@*@model IEnumerable<Piscesco.Models.Product>*@
-@model dynamic
-
 @using Piscesco.Controllers
 
 @{
@@ -21,7 +19,7 @@
         </p>
         <br />
         <br />
-        @if (featuredProduct.Count() > 0)
+        @if (featuredProduct.FirstOrDefault() != null)
         {
             <h2>Added list</h2>
             <table class="table" style=" border: 2px solid #dee2e6; border-radius: 5px;">

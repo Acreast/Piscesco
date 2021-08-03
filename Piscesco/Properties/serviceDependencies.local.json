@@ -1,9 +1,5 @@
 {
   "dependencies": {
-    "mssql1": {
-      "type": "mssql.local",
-      "connectionId": "PiscescoContextConnection"
-    },
     "mssql2": {
       "type": "mssql.local",
       "connectionId": "PiscescoModelContext"

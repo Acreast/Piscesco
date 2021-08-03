@@ -68,6 +68,7 @@ namespace Piscesco.Areas.Identity.Pages.Account.Manage
                 UserAddress = user.UserAddress,
                 Name = user.Name,
                 Role = user.Role
+
             };
         }
 
@@ -108,6 +109,16 @@ namespace Piscesco.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            if(Input.Name != user.Name)
+            {
+                user.Name = Input.Name;
+            }
+            if (Input.UserAddress != user.UserAddress)
+            {
+                user.UserAddress = Input.UserAddress;
+            }
+
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
