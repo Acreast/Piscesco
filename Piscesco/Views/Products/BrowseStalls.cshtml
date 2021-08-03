@@ -78,7 +78,7 @@
                                 <a asp-action="BrowseProducts" asp-route-id="@item.StallID">
                                     <span class="product-image">
                                         <img src="@bc.GetImage(stallItems.ProductImage)" alt="Image" class="img-fluid">
-                                    </span> <span class="product-title">@stallItems.ProductName</span> <span class="color">@item.StallName</span> <span class="price">RM @stallItems.Price / unit</span>
+                                    </span> <span class="product-title">@stallItems.ProductName</span> <span class="color">@item.StallName</span> <span class="price">RM @stallItems.Price / @stallItems.ProductUnit</span>
                                 </a>
                                 <div class="product-icon">
                                     <!--
